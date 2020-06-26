@@ -3,7 +3,8 @@
 
   'use strict';
 
-  var A_DAY_IN_MILLISECONDS = 86400000
+  var monthAndYearHeader, yearsPaginationHeader, daysColumns, days
+    , A_DAY_IN_MILLISECONDS = 86400000
     , isMobile = (function isMobile() {
 
       if (navigator.userAgent &&
@@ -106,30 +107,19 @@
     , generateDays = function generateDays() {
 
       return [
-		    '<div class="_720kb-datepicker-calendar-body">',
+        '<div class="_720kb-datepicker-calendar-body">',
 
-          `<a ng-repeat="px in prevMonthDays track by $index"
-            ng-click="setDatepickerDay(px, monthNumber - 1)"
-            class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">
-                {{ ::px }}
-              </a>`,
+          '<a ng-repeat="px in prevMonthDays track by $index" ng-click="setDatepickerDay(px, monthNumber - 1)" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+            '{{ ::px }}',
+          '</a>',
 
-          `<a ng-repeat="item in days track by $index"
-            ng-click="setDatepickerDay(item, monthNumber)"
-            ng-class="{
-              \'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year,
-              \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),
-              \'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay
-            }"
-            class="_720kb-datepicker-calendar-day">
-                {{ ::item }}
-          </a>`,
+          '<a ng-repeat="item in days track by $index" ng-click="setDatepickerDay(item, monthNumber)" ng-class="{ \'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item), \'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
+            '{{ ::item }}',
+          '</a>',
 
-          `<a ng-repeat="nx in nextMonthDays track by $index"
-            ng-click="setDatepickerDay(nx, monthNumber + 1)"
-            class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">
-                {{ ::nx }}
-          </a>`,
+          '<a ng-repeat="nx in nextMonthDays track by $index" ng-click="setDatepickerDay(nx, monthNumber + 1)" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+            '{{ ::nx }}',
+          '</a>',
 
         '</div>'
       ];
@@ -139,15 +129,15 @@
       var toReturn = [
         '<div class="_720kb-datepicker-calendar {{datepickerClass}} {{datepickerID}}" ng-class="{\'_720kb-datepicker-forced-to-open\': checkVisibility()}" ng-blur="hideCalendar()">',
         '</div>'
-      ]
-      , monthAndYearHeader = generateMonthAndYearHeader(prevButton, nextButton, preventMobile)
-      , yearsPaginationHeader = generateYearsPaginationHeader(prevButton, nextButton)
-      , daysColumns = generateDaysColumns()
-      , days = generateDays()
-      , iterator = function iterator(aRow) {
-
+      ],
+      iterator = function iterator(aRow) {
         toReturn.splice(toReturn.length - 1, 0, aRow);
       };
+
+      monthAndYearHeader = generateMonthAndYearHeader(prevButton, nextButton, preventMobile);
+      yearsPaginationHeader = generateYearsPaginationHeader(prevButton, nextButton);
+      daysColumns = generateDaysColumns();
+      days = generateDays();
 
       monthAndYearHeader.forEach(iterator);
       yearsPaginationHeader.forEach(iterator);
@@ -190,15 +180,15 @@
 
               return defaultMonth;
             }
-          , getDaysInString = function getDaysInString(days) {
+          , getDaysInString = function getDaysInString(stringDays) {
             if ($scope.localizedDays) {
-              return days.map(function mappingFunc(dayIdx) {
+              return stringDays.map(function mappingFunc(dayIdx) {
                 return $scope.localizedDays[dayIdx];
               });
             }
 
             // default days
-            return days.map(function mappingFunc(el) {
+            return stringDays.map(function mappingFunc(el) {
               return $filter('date')(new Date(new Date('06/08/2014').valueOf() + A_DAY_IN_MILLISECONDS * el), 'EEE');
             });
           }
